@@ -23,48 +23,53 @@
  */
 
 function roadsAndLibraries(n, c_lib, c_road, cities) {
-    const routes = {}
-    for (let _cities of cities) {
-        const [c1, c2] = _cities
-        if (routes[c1]) {
-            routes[c1].cities.push(c2)
-        } else {
-            routes[c1] = {
-                cities: [c2],
-                visited: false
-            }
-        }
-        
-        if (routes[c2]) {
-            routes[c2].cities.push(c1)
-        } else {
-            routes[c2] = {
-                cities: [c1],
-                visited: false
-            }
-        }
-    }
-    console.log(routes)
-    let roads = 0
-    let library = 0
-    for(let route of Object.values(routes)) {
-        console.log(route)
-        if (route.visited) continue
-        roads += dfs(routes, route, 0)
-        // need to add a library if hit all the routes
-        library++
-    }
-    
-    // need to understand this better?? Why adding the ?
-    library += n - Object.keys(routes).length
-    return (library*c_lib) + (roads*c_road)
+  if (c_lib <= c_road) {
+      return n * c_lib
+  }
+  const routes = mapRoute(cities)
+
+  let roads = 0
+  let library = 0
+  for(let route of Object.values(routes)) {
+      if (route.visited) continue
+      roads += dfs(routes, route, 0)-1
+      // need to add a library if hit all the routes
+      library++
+  }
+  
+  return (library*c_lib) + (roads*c_road)
+}
+
+function mapRoute(cities) {
+  const routes = {}
+  for (let _cities of cities) {
+      const [c1, c2] = _cities
+      if (routes[c1]) {
+          routes[c1].cities.push(c2)
+      } else {
+          routes[c1] = {
+              cities: [c2],
+              visited: false
+          }
+      }
+      
+      if (routes[c2]) {
+          routes[c2].cities.push(c1)
+      } else {
+          routes[c2] = {
+              cities: [c1],
+              visited: false
+          }
+      }
+  }
+  return routes
 }
 
 function dfs(routes, route, roads) {
-    if (route.visited) return roads
-    route.visited = true
-    for (let cities of route.cities) {
-        roads += dfs(routes, routes[cities], roads)
-    }
-    return roads + 1
+  if (route.visited) return roads
+  route.visited = true
+  for (let cities of route.cities) {
+      roads += dfs(routes, routes[cities], roads)
+  }
+  return roads + 1
 }
