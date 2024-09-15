@@ -2,9 +2,7 @@
  * 
  * https://www.hackerrank.com/challenges/new-year-chaos/problem?isFullScreen=true&h_l=interview&playlist_slugs%5B%5D=interview-preparation-kit&playlist_slugs%5B%5D=arrays
  * 
- * My jumps are off.. because I am not accounting for the
- * specific character. Maybe I need to watch each character
- * and how far it jumps??
+ * Fixed the jumps but it times out on hacker rank
  * 
  * Complete the 'minimumBribes' function below.
  *
@@ -13,14 +11,18 @@
 
 function minimumBribes(q) {
     let bribe = 0
+    const jumpsOnQ = {}
     for (let i=q.length-1; i > 0; i--) {
         for (let j=i-1; j >= 0; j--) {
             if (q[i] < q[j]) {
-                // TOOD fix this
-                const jumps = i - j
-                if (jumps > 2) {
-                    console.log('Too chaotic')
-                    return
+                if (jumpsOnQ[q[j]]) {
+                    jumpsOnQ[q[j]] += 1
+                    if (jumpsOnQ[q[j]] > 2) {
+                        console.log('Too chaotic')
+                        return
+                    }
+                } else {
+                    jumpsOnQ[q[j]] = 1
                 }
                 bribe += 1
             }
